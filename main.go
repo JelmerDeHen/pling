@@ -40,14 +40,6 @@ func afk() {
 	}
 	running = true
 
-	// Only run between 6:00 and 20:00
-	/*
-	     now := time.Now()
-	   	if now.Hour() < 6 || now.Hour() > 20 {
-	   		return
-	   	}
-	*/
-
 	if !notifiedAfk {
 		log.Println("User went afk")
 		notifiedAfk = true
@@ -63,6 +55,17 @@ func afk() {
 }
 
 func playmp3() {
+	// Don't play sounds at night
+	now := time.Now()
+	start := config.Mp3HourStart()
+	stop := config.Mp3HourStop()
+	if stop != 0 {
+		if now.Hour() < start || now.Hour() > stop {
+			log.Printf("playmp3(): Skip: only playing mp3 between %d and %d\n", start, stop)
+			return
+		}
+	}
+
 	streamer, _, err := mp3.Decode(io.NopCloser(bytes.NewReader(pling)))
 	if err != nil {
 		log.Fatal(err)
@@ -82,7 +85,7 @@ func idleLess() {
 }
 
 func main() {
-	log.Printf("Pling: idleOverTimeout=%s; pollInterval=%s; mp3=%s\n", config.IdleOverTimeout(), config.PollInterval(), config.Mp3())
+	log.Printf("Pling: idleOverTimeout=%s; pollInterval=%s; mp3=%s; mp3HourStart=%d; mp3HourStop=%d\n", config.IdleOverTimeout(), config.PollInterval(), config.Mp3(), config.Mp3HourStart(), config.Mp3HourStop())
 
 	idle := xidle.Idlemon{
 		IdleOver: afk,

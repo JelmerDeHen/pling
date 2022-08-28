@@ -14,6 +14,8 @@ type ConfigSchema struct {
 	IdleOverTimeout time.Duration `env:"idle_over_timeout" default:"10m"`
 	// Not implemented yet
 	Mp3          string        `env:"mp3" default:""`
+	Mp3HourStart int           `env:"mp3_hour_start" default:0`
+	Mp3HourStop  int           `env:"mp3_hour_stop" default:0`
 	PollInterval time.Duration `env:"poll_interval" default:"1s"`
 }
 
@@ -29,6 +31,8 @@ type ConfigI interface {
 	IdleOverTimeout() time.Duration
 	PollInterval() time.Duration
 	Mp3() string
+	Mp3HourStart() int
+	Mp3HourStop() int
 }
 
 type Config struct {
@@ -64,6 +68,16 @@ func (c *Config) PollInterval() time.Duration {
 
 func (c *Config) Mp3() string {
 	return c.viper.GetString(SchemaFieldToEnvName("Mp3"))
+}
+
+func (c *Config) Mp3HourStart() int {
+	start := c.viper.GetInt(SchemaFieldToEnvName("Mp3HourStart"))
+
+	return start
+}
+func (c *Config) Mp3HourStop() int {
+	stop := c.viper.GetInt(SchemaFieldToEnvName("Mp3HourStop"))
+	return stop
 }
 
 func NewConfig() (*Config, error) {

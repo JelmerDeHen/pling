@@ -1,6 +1,6 @@
 # Pling
 
-Perform action when user is afk
+Play sound and lock screen when user is afk.
 
 ## Config
 
