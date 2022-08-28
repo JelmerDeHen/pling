@@ -10,7 +10,7 @@ Looks for config file named `.pling` in `$HOME` and current working directory. C
 idle_over_timeout: 10m
 poll_interval: 1m
 i3lock: false
-i3lock_color: #00ff00
+i3lock_color: 00ff00
 mp3: /some/path.mp3
 ```
 
