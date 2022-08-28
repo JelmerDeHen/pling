@@ -1,0 +1,2 @@
+idle_over_timeout: 10m
+poll_interval: 1m
