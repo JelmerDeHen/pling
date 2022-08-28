@@ -3,7 +3,7 @@ module github.com/JelmerDeHen/pling
 go 1.19
 
 require (
-	github.com/JelmerDeHen/xidle v0.0.0-20220827133104-8697c53c71e0
+	github.com/JelmerDeHen/xidle v0.0.0-20220828231933-d3d9733d83c2
 	github.com/faiface/beep v1.1.0
 	github.com/spf13/viper v1.12.0
 )

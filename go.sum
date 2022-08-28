@@ -41,8 +41,8 @@ github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym
 github.com/DATA-DOG/go-sqlmock v1.3.3/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
 github.com/JelmerDeHen/scrnsaver v0.0.0-20220827073217-d8af05db8655 h1:xaItyLeracYELOqkycDmOqshV/KrKOO7NcBf2d1gVwE=
 github.com/JelmerDeHen/scrnsaver v0.0.0-20220827073217-d8af05db8655/go.mod h1:T28lCuvVEg6NNEFvqbfAfcXoek7yLmw9JNxl0ErIcj4=
-github.com/JelmerDeHen/xidle v0.0.0-20220827133104-8697c53c71e0 h1:Xs72cNYTpemiSh+mnUrsn1/dgt/o49mftsak+Y4/jpk=
-github.com/JelmerDeHen/xidle v0.0.0-20220827133104-8697c53c71e0/go.mod h1:4k3S66rgmLPryJe6bMETziHmCEpVR3ykM4W5nMDVnf8=
+github.com/JelmerDeHen/xidle v0.0.0-20220828231933-d3d9733d83c2 h1:OEzAYeRJPJMlxegEcoB3NAjBIuzpy4uPkhK9E/BMHig=
+github.com/JelmerDeHen/xidle v0.0.0-20220828231933-d3d9733d83c2/go.mod h1:4k3S66rgmLPryJe6bMETziHmCEpVR3ykM4W5nMDVnf8=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=

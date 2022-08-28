@@ -90,11 +90,11 @@ func main() {
 	idle := xidle.Idlemon{
 		IdleOver: afk,
 		// Determines afk duration until mp3 is played
-		IdleOverT: config.IdleOverTimeout(),
+		IdleOverTimeout: config.IdleOverTimeout(),
 		// Will determine the interval between mp3 plays
-		PollT:     config.PollInterval(),
-		IdleLessT: time.Second * 1,
-		IdleLess:  idleLess,
+		PollInterval:    config.PollInterval(),
+		IdleLessTimeout: time.Second * 1,
+		IdleLess:        idleLess,
 	}
 
 	idle.Run()
