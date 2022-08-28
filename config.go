@@ -8,6 +8,9 @@ import (
 )
 
 type ConfigSchema struct {
+	// When I3lock is true i3lock will be excuted when user is idle
+	I3lock          bool          `env:"i3lock" default:false`
+	I3lockColor     string        `env:"i3lock_color" default:"000000"`
 	IdleOverTimeout time.Duration `env:"idle_over_timeout" default:"10m"`
 	// Not implemented yet
 	Mp3          string        `env:"mp3" default:""`
@@ -21,6 +24,8 @@ func SchemaFieldToEnvName(field string) string {
 }
 
 type ConfigI interface {
+	I3lock() bool
+	I3lockColor() string
 	IdleOverTimeout() time.Duration
 	PollInterval() time.Duration
 	Mp3() string
@@ -29,6 +34,24 @@ type ConfigI interface {
 type Config struct {
 	viper *viper.Viper
 	ConfigI
+}
+
+func (c *Config) I3lock() bool {
+	return c.viper.GetBool(SchemaFieldToEnvName("I3lock"))
+}
+
+func (c *Config) I3lockColor() string {
+	color := c.viper.GetString(SchemaFieldToEnvName("I3lockColor"))
+	// rrggbb
+	for i, c := range color {
+		if !((c > 0x2f && c < 0x3a) || (c > 0x60 && c < 0x67) || (c > 0x40 && c < 0x47)) {
+			return "000000"
+		}
+		if i > 5 {
+			return "000000"
+		}
+	}
+	return color
 }
 
 func (c *Config) IdleOverTimeout() time.Duration {

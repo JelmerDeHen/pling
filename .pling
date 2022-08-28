@@ -1,2 +1,4 @@
-idle_over_timeout: 10m
-poll_interval: 1m
+idle_over_timeout: 5m
+poll_interval: 1s
+i3lock: false
+i3lock_color: ff0000
