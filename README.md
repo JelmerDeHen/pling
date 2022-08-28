@@ -25,6 +25,8 @@ make && PLING_IDLE_OVER_TIMEOUT=3s PLING_POLL_INTERVAL=1s ./bin/pling
 - `i3lock` setting this to true will execute i3lock when user is afk
 - `i3lock_color` what rrggbb color i3lock screen will be
 - `mp3` not implemented yet, will allow changing mp3 played
+- `mp3_hour_start` configures what hour to start playing mp3 sound
+- `mp3_hour_stop` configures what hour to stop playing mp3 sound
 
 ## Install
 
