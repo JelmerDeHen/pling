@@ -1,5 +1,5 @@
 afk_timeout: 5m
-i3lock: false
-mp3_interval: 5s
+i3lock: true
+mp3_interval: 10s
 mp3_hour_start: 6
-mp3_hour_stop: 20
+mp3_hour_stop: 22

@@ -11,7 +11,6 @@ clean:
 				rm -rf bin
 
 install:
-				echo "${BIN}"
 				cp -v .pling "${HOME}/.pling"
 				printf '[Service]\nExecStart=${BIN}\n' > "${SYSTEMD_USER_DIR}/pling.service"
 				printf '[Timer]\nOnBootSec=0min\nOnUnitActiveSec=1min\n\n[Install]\nWantedBy=timers.target' > "${SYSTEMD_USER_DIR}/pling.timer"
