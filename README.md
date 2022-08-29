@@ -6,11 +6,11 @@ Play sound and lock screen when user is afk.
 
 Looks for config file named `.pling` in `$HOME` and current working directory. Configuration file format is yaml.
 
-Configuration file named `.pling` are searching in `$HOME` or current working directory. The following options exist:
+Configuration file named `.pling` are searched in `$HOME` or current working directory. The following options exist:
 
 - `idle_over_timeout` determines afk duration until afk handler is executed
 - `i3lock` setting this to true will execute i3lock when user is afk
-- `i3lock_color` what rrggbb color i3lock screen will be
+- `i3lock_color` turn i3lock screen in rrggbb color instead of black
 - `mp3` not implemented yet, will allow changing mp3 played
 - `mp3_interval` interval between playing mp3 when user is afk
 - `mp3_hour_start` hour of day to start playing mp3
