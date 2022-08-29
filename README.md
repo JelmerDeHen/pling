@@ -11,12 +11,12 @@ Configuration file named `.pling` are searched in `$HOME` or current working dir
 
 |Name|Type|Default|Description|
 | --- | --- | --- | --- |
-| `afk_timeout` | `time.Duration` | `10m` | Time until user is considered afk and mp3 is played and i3lock is executed |
-| `i3lock` | `bool` | `false` | When true executes i3lock when `afk_timeout` is reached |
-| `i3lock_color` | `string` | `000000` | Configures i3lock screen in rrggbb color instead of black |
-| `mp3_file` | `string` | in-memory file | Configure the mp3 file played when user is afk |
-| `mp3_hour_start` | `int` | ``  | Hour of day to start playing mp3 |
-| `mp3_hour_stop` | `int` | `` | Hour of day to stop playing mp3 |
+| `afk_timeout` | `time.Duration` | `10m` | Duration until user is afk |
+| `i3lock` | `bool` | `false` | Exec i3lock when `afk_timeout` is reached |
+| `i3lock_color` | `string` | `000000` | Change i3lock screen color to rrggbb |
+| `mp3_file` | `string` | | mp3 file played when user is afk |
+| `mp3_hour_start` | `int` |  | Hour of day to start playing mp3 |
+| `mp3_hour_stop` | `int` | | Hour of day to stop playing mp3 |
 | `mp3_interval` | `time.Duration` | `5s` | Duration to wait until playing mp3 file again |
 
 See `.pling` file for default config file.
