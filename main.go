@@ -17,6 +17,7 @@ var (
 	config  *Config
 	running bool
 
+	// These bools guard executing afk() and present() handler multiple times
 	notifiedAfk     bool
 	notifiedPresent bool
 
@@ -31,23 +32,23 @@ var (
 )
 
 func init() {
-	lastSeen = time.Now()
-	lastPresent = time.Now()
-
-	finishedPlayingTimestamp = time.Now()
-	playMp3Interval = time.Second * 5
-
-	_, format, err := mp3.Decode(io.NopCloser(bytes.NewReader(pling)))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
-
+	// Load config
+	var err error
 	config, err = NewConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// speaker.Init() should be called once
+	_, format, err := mp3.Decode(io.NopCloser(bytes.NewReader(pling)))
+	if err != nil {
+		log.Fatal(err)
+	}
+	speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
+
+	//
+	lastSeen = time.Now()
+	lastPresent = time.Now()
 }
 
 func afk() {
@@ -64,21 +65,23 @@ func afk() {
 			i3lock(config.I3lockColor())
 		}
 
-		lastSeen = time.Now()
-		presentTime = lastSeen.Sub(lastPresent)
+		now := time.Now()
+
+		lastSeen = now
+		presentTime = now.Sub(lastPresent)
 
 		log.Printf("User afk: presentTime=%s\n", presentTime)
 		notifiedAfk = true
 	}
-
 }
 
 func present() {
 	notifiedAfk = false
 	if !notifiedPresent {
+		now := time.Now()
 
-		lastPresent := time.Now()
-		afkTime = lastPresent.Sub(lastSeen)
+		lastPresent = now
+		afkTime = now.Sub(lastSeen)
 
 		log.Printf("User is back: afkTime=%s\n", afkTime)
 		notifiedPresent = true
@@ -118,6 +121,7 @@ func playmp3() {
 		return
 	}
 
+	// Play mp3 file
 	streamer, _, err := mp3.Decode(io.NopCloser(bytes.NewReader(pling)))
 	if err != nil {
 		log.Fatal(err)
