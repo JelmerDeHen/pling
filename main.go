@@ -25,11 +25,17 @@ var (
 
 	afkTime     time.Duration
 	presentTime time.Duration
+
+	finishedPlayingTimestamp time.Time
+	playMp3Interval          time.Duration
 )
 
 func init() {
 	lastSeen = time.Now()
 	lastPresent = time.Now()
+
+	finishedPlayingTimestamp = time.Now()
+	playMp3Interval = time.Second * 5
 
 	_, format, err := mp3.Decode(io.NopCloser(bytes.NewReader(pling)))
 	if err != nil {
@@ -79,19 +85,37 @@ func present() {
 	}
 }
 
+// Plays mp3 when certain conditions are met
+// The callback for speaker.Play is asynchronous so always set running=false when returning early
 func playmp3() {
-	// Don't play sounds at night
 	now := time.Now()
+
+	// finishedPlayingTimestamp is updated after playing mp3
+	// durationSinceLastPlay describes duration since last time finishing playing mp3
+	// Check if this duration is greater than the config config.Mp3Interval()
+	durationSinceLastPlay := now.Sub(finishedPlayingTimestamp)
+	if durationSinceLastPlay < config.Mp3Interval() {
+		running = false
+		return
+	}
+
+	// config.Mp3HourStart() and config.Mp3HourStop() allow configuring the time between which to play mp3
 	start := config.Mp3HourStart()
-	stop := config.Mp3HourStop()
-	if stop != 0 {
-		if now.Hour() < start || now.Hour() > stop {
-			if !notifiedAfk {
-				log.Printf("playmp3(): Skip: only playing mp3 between %d and %d\n", start, stop)
-			}
-			running = false
-			return
+	if now.Hour() < start {
+		if !notifiedAfk {
+			log.Printf("playmp3(): Skip: only playing mp3 from %d o'clock\n", start)
 		}
+		running = false
+		return
+	}
+
+	stop := config.Mp3HourStop()
+	if now.Hour() != 0 && now.Hour() > stop {
+		if !notifiedAfk {
+			log.Printf("playmp3(): Skip: only playing mp3 until %d o'clock\n", stop)
+		}
+		running = false
+		return
 	}
 
 	streamer, _, err := mp3.Decode(io.NopCloser(bytes.NewReader(pling)))
@@ -101,19 +125,19 @@ func playmp3() {
 	speaker.Play(beep.Seq(streamer, beep.Callback(func() {
 		// This callback runs after streamer completed playing mp3
 		running = false
+		finishedPlayingTimestamp = time.Now()
 	})))
+	return
 }
 
 func main() {
-	log.Printf("Pling: idleOverTimeout=%s; pollInterval=%s; mp3=%s; mp3HourStart=%d; mp3HourStop=%d\n", config.IdleOverTimeout(), config.PollInterval(), config.Mp3(), config.Mp3HourStart(), config.Mp3HourStop())
+	log.Printf("Pling: idleOverTimeout=%s; mp3=%s; mp3Interval=%s; mp3HourStart=%d; mp3HourStop=%d\n", config.IdleOverTimeout(), config.Mp3(), config.Mp3Interval(), config.Mp3HourStart(), config.Mp3HourStop())
 
 	idle := xidle.Idlemon{
 		IdleOver: afk,
 		// Determines afk duration until mp3 is played
 		IdleOverTimeout: config.IdleOverTimeout(),
-		// Will determine the interval between mp3 plays
-		PollInterval:    config.PollInterval(),
-		IdleLessTimeout: time.Second * 1,
+		IdleLessTimeout: time.Second,
 		IdleLess:        present,
 	}
 
