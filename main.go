@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bytes"
-	"io"
+	_ "bytes"
+	_ "io"
 	"log"
 	"time"
 
@@ -29,6 +29,8 @@ var (
 
 	finishedPlayingTimestamp time.Time
 	playMp3Interval          time.Duration
+
+	mp3player *Mp3Player
 )
 
 func init() {
@@ -39,8 +41,12 @@ func init() {
 		log.Fatal(err)
 	}
 
+	mp3player = &Mp3Player{
+		File: config.Mp3File(),
+	}
+
 	// speaker.Init() should be called once
-	_, format, err := mp3.Decode(io.NopCloser(bytes.NewReader(pling)))
+	_, format, err := mp3.Decode(mp3player.GetMp3ReadCloser())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -122,7 +128,7 @@ func playmp3() {
 	}
 
 	// Play mp3 file
-	streamer, _, err := mp3.Decode(io.NopCloser(bytes.NewReader(pling)))
+	streamer, _, err := mp3.Decode(mp3player.GetMp3ReadCloser())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -135,7 +141,7 @@ func playmp3() {
 }
 
 func main() {
-	log.Printf("Pling: idleOverTimeout=%s; mp3=%s; mp3Interval=%s; mp3HourStart=%d; mp3HourStop=%d\n", config.IdleOverTimeout(), config.Mp3(), config.Mp3Interval(), config.Mp3HourStart(), config.Mp3HourStop())
+	log.Println(config)
 
 	idle := xidle.Idlemon{
 		IdleOver: afk,

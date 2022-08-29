@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"reflect"
 	"time"
 
@@ -14,8 +15,8 @@ type ConfigSchema struct {
 	I3lockColor string `env:"i3lock_color" default:"000000"`
 	// Time until afk() handler is triggered
 	IdleOverTimeout time.Duration `env:"idle_over_timeout" default:"10m"`
-	// Not implemented
-	Mp3 string `env:"mp3" default:""`
+	// Path to mp3 file to play when afk
+	Mp3File string `env:"mp3_file" default:""`
 	// Hour of day to start playing mp3
 	Mp3HourStart int `env:"mp3_hour_start" default:0`
 	// Hour of day to stop playing mp3
@@ -34,7 +35,7 @@ type ConfigI interface {
 	I3lock() bool
 	I3lockColor() string
 	IdleOverTimeout() time.Duration
-	Mp3() string
+	Mp3File() string
 	Mp3HourStart() int
 	Mp3HourStop() int
 	Mp3Interval() time.Duration
@@ -67,8 +68,8 @@ func (c *Config) IdleOverTimeout() time.Duration {
 	return c.viper.GetDuration(SchemaFieldToEnvName("IdleOverTimeout"))
 }
 
-func (c *Config) Mp3() string {
-	return c.viper.GetString(SchemaFieldToEnvName("Mp3"))
+func (c *Config) Mp3File() string {
+	return c.viper.GetString(SchemaFieldToEnvName("Mp3File"))
 }
 
 func (c *Config) Mp3HourStart() int {
@@ -83,6 +84,19 @@ func (c *Config) Mp3HourStop() int {
 
 func (c *Config) Mp3Interval() time.Duration {
 	return c.viper.GetDuration(SchemaFieldToEnvName("Mp3Interval"))
+}
+
+func (c *Config) String() (ret string) {
+	schemaT := reflect.TypeOf(ConfigSchema{})
+	ret = "type Config struct {\n"
+	for index := 0; index < schemaT.NumField(); index++ {
+		item := schemaT.FieldByIndex([]int{index})
+		name := item.Tag.Get("env")
+		def, _ := item.Tag.Lookup("default")
+		ret += fmt.Sprintf("\t%s %s `env:\"%s\" default:\"%s\"` = %s\n", item.Name, item.Type, name, def, c.viper.GetString(name))
+	}
+	ret += "}"
+	return ret
 }
 
 func NewConfig() (*Config, error) {
