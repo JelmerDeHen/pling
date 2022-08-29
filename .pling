@@ -1,4 +1,4 @@
-idle_over_timeout: 5s
+afk_timeout: 5m
 i3lock: false
 i3lock_color: ff0000
 mp3: /some/path.mp3

@@ -14,7 +14,7 @@ type ConfigSchema struct {
 	// Background color for i3
 	I3lockColor string `env:"i3lock_color" default:"000000"`
 	// Time until afk() handler is triggered
-	IdleOverTimeout time.Duration `env:"idle_over_timeout" default:"10m"`
+	AfkTimeout time.Duration `env:"afk_timeout" default:"10m"`
 	// Path to mp3 file to play when afk
 	Mp3File string `env:"mp3_file" default:""`
 	// Hour of day to start playing mp3
@@ -34,7 +34,7 @@ func SchemaFieldToEnvName(field string) string {
 type ConfigI interface {
 	I3lock() bool
 	I3lockColor() string
-	IdleOverTimeout() time.Duration
+	AfkTimeout() time.Duration
 	Mp3File() string
 	Mp3HourStart() int
 	Mp3HourStop() int
@@ -64,8 +64,8 @@ func (c *Config) I3lockColor() string {
 	return color
 }
 
-func (c *Config) IdleOverTimeout() time.Duration {
-	return c.viper.GetDuration(SchemaFieldToEnvName("IdleOverTimeout"))
+func (c *Config) AfkTimeout() time.Duration {
+	return c.viper.GetDuration(SchemaFieldToEnvName("AfkTimeout"))
 }
 
 func (c *Config) Mp3File() string {
