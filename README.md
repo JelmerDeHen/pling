@@ -20,7 +20,7 @@ Example config file:
 
 ```yaml
 afk_timeout: 10m
-mp3: /some/path.mp3
+mp3_file: /some/path.mp3
 mp3_interval: 1m
 i3lock: false
 i3lock_color: 00ff00
