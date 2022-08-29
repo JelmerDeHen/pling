@@ -1,7 +1,5 @@
 afk_timeout: 5m
 i3lock: false
-i3lock_color: ff0000
-mp3_file: /some/path.mp3
 mp3_interval: 5s
 mp3_hour_start: 6
 mp3_hour_stop: 20

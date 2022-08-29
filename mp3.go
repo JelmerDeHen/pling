@@ -69,7 +69,7 @@ func (m *Mp3Player) Play() {
 		return
 	}
 
-	if now.Hour() != 0 && now.Hour() > m.HourStop {
+	if now.Hour() != 0 && now.Hour() >= m.HourStop {
 		if !notifiedAfk {
 			log.Printf("playmp3(): Skip: only playing mp3 until %d o'clock\n", m.HourStop)
 		}

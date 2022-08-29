@@ -9,12 +9,12 @@ import (
 )
 
 type ConfigSchema struct {
+	// Time until afk() handler is triggered
+	AfkTimeout time.Duration `env:"afk_timeout" default:"10m"`
 	// When I3lock is true i3lock will be excuted when user is idle
 	I3lock bool `env:"i3lock" default:false`
 	// Background color for i3
 	I3lockColor string `env:"i3lock_color" default:"000000"`
-	// Time until afk() handler is triggered
-	AfkTimeout time.Duration `env:"afk_timeout" default:"10m"`
 	// Path to mp3 file to play when afk
 	Mp3File string `env:"mp3_file" default:""`
 	// Hour of day to start playing mp3
