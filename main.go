@@ -41,9 +41,18 @@ func afk() {
 		now := time.Now()
 
 		lastSeen = now
-		presentTime = now.Sub(lastPresent)
+		presentTime = now.Sub(lastPresent) - config.AfkTimeout()
 
+		// User went away t-config.Afktime() to get here
 		log.Printf("User afk: presentTime=%s\n", presentTime)
+
+		activityRecord := &ActivityRecord{
+			State: "online",
+			Start: now.Add(-1 * presentTime),
+			Stop:  now,
+		}
+		LogActivity(activityRecord)
+
 		notifiedAfk = true
 	}
 }
@@ -57,6 +66,14 @@ func present() {
 		afkTime = now.Sub(lastSeen)
 
 		log.Printf("User is back: afkTime=%s\n", afkTime)
+
+		activityRecord := &ActivityRecord{
+			State: "offline",
+			Start: now.Add(-1 * afkTime),
+			Stop:  now,
+		}
+		LogActivity(activityRecord)
+
 		notifiedPresent = true
 	}
 }
@@ -89,6 +106,10 @@ func flagOverride(cCtx *cli.Context) {
 	if cCtx.Duration("mp3_interval") != 0 {
 		config.viper.Set("mp3_interval", cCtx.Duration(SchemaFieldToEnvName("Mp3Interval")))
 	}
+
+	if cCtx.String("dsn") != "" {
+		config.viper.Set("dsn", cCtx.String(SchemaFieldToEnvName("Dsn")))
+	}
 }
 
 func run(cCtx *cli.Context) error {
@@ -100,9 +121,19 @@ func run(cCtx *cli.Context) error {
 	}
 
 	flagOverride(cCtx)
+	err = initSql()
+	if err != nil {
+		log.Println(err)
+		// Allow running without db
+	}
 
 	if cCtx.IsSet("info") {
 		log.Println(config)
+		os.Exit(0)
+	}
+
+	if cCtx.IsSet("list") {
+		ListRecords()
 		os.Exit(0)
 	}
 
@@ -126,12 +157,13 @@ func run(cCtx *cli.Context) error {
 	idle.Run()
 	return nil
 }
+
 func main() {
+
 	app := &cli.App{
 		Name:    "Pling",
 		Usage:   "CLI for Pling",
 		Version: "v0.1.0",
-
 		Flags: []cli.Flag{
 			&cli.DurationFlag{Name: "afk_timeout", Usage: "Duration until user is afk"},
 			&cli.BoolFlag{Name: "i3lock", Usage: "Exec i3lock when afk_timeout is reached"},
@@ -141,15 +173,13 @@ func main() {
 			&cli.IntFlag{Name: "mp3_hour_stop", Usage: "Hour of day to stop playing mp3"},
 			&cli.DurationFlag{Name: "mp3_interval", Usage: "Duration to wait until playing mp3 file again"},
 			&cli.BoolFlag{Name: "info", Usage: "Show config and exit"},
+			&cli.BoolFlag{Name: "list", Usage: "select * from activity"},
+			&cli.StringFlag{Name: "dsn", Usage: "database file location"},
 		},
 		Action: run,
 	}
 
-	cli.VersionFlag = &cli.BoolFlag{
-		Name:    "print-version",
-		Aliases: []string{"V"},
-		Usage:   "print only the version",
-	}
+	cli.VersionFlag = &cli.BoolFlag{Name: "version", Aliases: []string{"V"}, Usage: "Print version"}
 
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)

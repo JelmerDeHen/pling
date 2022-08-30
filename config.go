@@ -23,6 +23,8 @@ type ConfigSchema struct {
 	Mp3HourStop int `env:"mp3_hour_stop" default:0`
 	// Time to wait between playing MP3
 	Mp3Interval time.Duration `env:"mp3_interval" default:"5s"`
+	// Path to sqlite3 database
+	Dsn string `env:"dsn" default:""`
 }
 
 func SchemaFieldToEnvName(field string) string {
@@ -39,6 +41,7 @@ type ConfigI interface {
 	Mp3HourStart() int
 	Mp3HourStop() int
 	Mp3Interval() time.Duration
+	Dsn() string
 }
 
 type Config struct {
@@ -84,6 +87,10 @@ func (c *Config) Mp3HourStop() int {
 
 func (c *Config) Mp3Interval() time.Duration {
 	return c.viper.GetDuration(SchemaFieldToEnvName("Mp3Interval"))
+}
+
+func (c *Config) Dsn() string {
+	return c.viper.GetString(SchemaFieldToEnvName("Dsn"))
 }
 
 func (c *Config) String() (ret string) {
